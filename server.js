@@ -67,7 +67,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     name: 'falcon.sid',
     cookie: {
-      secure: false,
+      secure: true, // Need to change between dev and prod
       maxAge: 1000 * 60 * 60, // 1 hour
     },
     store: store,
