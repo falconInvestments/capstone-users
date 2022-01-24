@@ -16,6 +16,7 @@ const verifyUser = async (req, res, next) => {
       id: user.id,
       email: user.email,
     };
+    req.session.save();
     next();
   } catch (error) {
     res
