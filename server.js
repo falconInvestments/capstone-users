@@ -65,7 +65,7 @@ app.post('/signup', (req, res, next) => {
 });
 
 app.post('/signin', verifyUser, (req, res) => {
-  res.status(200).send({ message: 'You are now logged in.' });
+  res.redirect('/user-dashboard');
 });
 
 app.post('/signout', (req, res, next) => {
