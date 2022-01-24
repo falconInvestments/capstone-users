@@ -19,12 +19,9 @@ const verifyUser = async (req, res, next) => {
       id: user.id,
       email: user.email,
     };
-    req.session.save();
     next();
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'There was an error signing in:', errorObj: error });
+    res.status(500).send('There was an error signing in.');
   }
 };
 
