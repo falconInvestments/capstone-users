@@ -38,7 +38,7 @@ passport.use(
     },
     (username, password, done) => {
       // async/await?
-      Users.findOne({ email: username }, (error, user) => {
+      Users.findOne({ username: username }, (error, user) => {
         if (error) {
           return done(error);
         }
