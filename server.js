@@ -74,7 +74,9 @@ app.post('/signup', (req, res, next) => {
 });
 
 app.post('/signin', verifyUser, (req, res) => {
-  res.status(200).send('You are now logged in.');
+  res
+    .status(200)
+    .json({ message: 'You are now logged in.', sessionObj: req.session });
 });
 
 app.post('/signout', (req, res, next) => {
