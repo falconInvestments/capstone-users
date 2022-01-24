@@ -57,9 +57,9 @@ const findAllUsers = async (req, res) => {
 // Update
 const updateUser = async (req, res) => {
   try {
-    // Re-work this as a PUT-type request; avoid unnecessary hashing
+    // Re-work this as a PATCH-type request; avoid unnecessary hashing
     const hash = bcrypt.hashSync(req.body.password, 10);
-    const user = await Users.update(
+    /* const user = */ await Users.update(
       {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -68,7 +68,7 @@ const updateUser = async (req, res) => {
       },
       { where: { id: req.params.id } }
     );
-    res.status(200).send(user);
+    res.status(200).send('The specified user has been updated.');
   } catch (error) {
     console.error('Error communicating with the Users RDS:', error);
     res.status(500).send('There was an error communicating with the database.');

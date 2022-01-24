@@ -86,7 +86,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/signup', (req, res, next) => {
-  userController.addUser;
+  userController.addUser(req, res);
 });
 
 app.post('/signin', passport.authenticate('local'), (req, res) => {
