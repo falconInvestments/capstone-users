@@ -18,7 +18,9 @@ const verifyUser = async (req, res, next) => {
     };
     next();
   } catch (error) {
-    next(error);
+    res
+      .status(500)
+      .json({ message: 'There was an error signing in:', errorObj: error });
   }
 };
 
