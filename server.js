@@ -31,7 +31,6 @@ store.on('error', error => {
 
 const app = express();
 
-app.set('trust proxy', 1);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
@@ -55,18 +54,10 @@ app.get('/', (req, res) => {
   res.status(200).send('Falcon Investments server is live.');
 });
 
-app.get('/user-dashboard', (req, res) => {
+app.get('/user-dashboard', verifyUser, (req, res) => {
   res
     .status(200)
     .send('You should only see this page if you are logged in and redirected.');
-});
-
-app.get('/protected-route', (req, res) => {
-  if (req.session.loggedIn) {
-    res.redirect('/user-dashboard');
-  } else {
-    res.status(401).send('This route is protected from the likes of you.');
-  }
 });
 
 app.post('/signup', (req, res, next) => {
@@ -85,7 +76,7 @@ app.post('/signout', (req, res, next) => {
         res.status(500).send('There was an error signing out.');
       } else {
         res.clearCookie('falcon.sid');
-        res.status(200).send('You have been signed out.');
+        res.redirect('/');
       }
     });
   } else {

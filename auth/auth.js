@@ -3,6 +3,9 @@ const bcrypt = require('bcryptjs');
 const Users = require('../models/index').Users;
 
 const verifyUser = async (req, res, next) => {
+  if (req.session.loggedIn) {
+    next();
+  }
   try {
     const user = await Users.findOne({ where: { email: req.body.email } });
     if (!user) {
