@@ -1,13 +1,10 @@
 // require('dotenv').config();
 
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
+const verifyUser = require('./auth/auth');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
-const Users = require('./models/index').Users;
 const userController = require('./controllers/userController');
 
 const port = process.env.PORT || 3000;
@@ -31,33 +28,6 @@ store.on('error', error => {
   console.error('There was an error with the MongoDB session store:', error);
 });
 
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: 'email',
-    },
-    (username, password, done) => {
-      // async/await?
-      Users.findOne({ username: username }, (error, user) => {
-        if (error) {
-          return done(error);
-        }
-        if (!user) {
-          return done(null, false, {
-            message: 'The provided sign-in credentials are invalid.',
-          });
-        }
-        if (!bcrypt.compareSync(password, user.password)) {
-          return done(null, false, {
-            message: 'The provided sign-in credentials are invalid.',
-          });
-        }
-        return done(null, user);
-      });
-    }
-  )
-);
-
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -75,8 +45,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/users', require('./routes/userRouter'));
 
@@ -85,21 +53,35 @@ app.get('/', (req, res) => {
   res.status(200).send('Falcon Investments server is live.');
 });
 
+app.get('/user-dashboard', (req, res) => {
+  res
+    .status(200)
+    .send('You should only see this page if you are logged in and redirected.');
+});
+
+app.get('/protected-route', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/user-dashboard');
+  } else {
+    res.status(401).send('This route is protected from the likes of you.');
+  }
+});
+
 app.post('/signup', (req, res, next) => {
   userController.addUser(req, res);
 });
 
-app.post('/signin', passport.authenticate('local'), (req, res) => {
+app.post('/signin', verifyUser, (req, res) => {
   console.log('Current session:', JSON.stringify(req.session));
   res.status(200).send('You are now logged in.');
 });
 
 app.post('/signout', (req, res, next) => {
   if (req.session) {
-    req.logout();
     req.session.destroy(error => {
       if (error) {
         console.error('There was an error signing out:', error);
+        res.status(500).send('There was an error signing out.');
       } else {
         res.clearCookie('falcon.sid');
         res.status(200).send('You have been signed out.');
