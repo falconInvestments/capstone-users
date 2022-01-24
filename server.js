@@ -74,7 +74,7 @@ app.post('/signup', (req, res, next) => {
 });
 
 app.post('/signin', verifyUser, (req, res) => {
-  res.status(200).send('You are now logged in.');
+  res.status(200).send({ message: 'You are now logged in.' });
 });
 
 app.post('/signout', (req, res, next) => {
