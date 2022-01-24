@@ -73,8 +73,7 @@ app.post('/signup', (req, res, next) => {
   userController.addUser(req, res);
 });
 
-app.post('/signin', verifyUser(), (req, res) => {
-  console.log('Current session:', JSON.stringify(req.session));
+app.post('/signin', verifyUser, (req, res) => {
   res.status(200).send('You are now logged in.');
 });
 
