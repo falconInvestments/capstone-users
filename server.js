@@ -2,6 +2,7 @@
 
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors');
 const verifyUser = require('./auth/auth');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
@@ -32,6 +33,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,

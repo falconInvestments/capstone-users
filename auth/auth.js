@@ -12,9 +12,10 @@ const verifyUser = async (req, res, next) => {
       res.status(400).send('The provided sign-in credentials are invalid.');
     }
     req.session.loggedIn = true;
-    req.session.email = req.body.email;
-    console.log('req.session:', req.session);
-    console.log('sessionID:', req.sessionID);
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+    };
     next();
   } catch (error) {
     next(error);
