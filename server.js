@@ -3,7 +3,8 @@
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
-const verifyUser = require('./auth/auth');
+const cookieParser = require('cookie-parser');
+const { isLoggedIn, signUserIn, signUserOut } = require('./auth/auth');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 const userController = require('./controllers/userController');
@@ -33,7 +34,8 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({ credentials: true }));
+app.use(cors(/*{ credentials: true }*/));
+app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -54,36 +56,19 @@ app.get('/', (req, res) => {
   res.status(200).send('Falcon Investments server is live.');
 });
 
-app.get('/user-dashboard', verifyUser, (req, res) => {
-  res
-    .status(200)
-    .send('You should only see this page if you are logged in and redirected.');
+app.get('/user-dashboard', isLoggedIn, (req, res) => {
+  res.status(200).send('You should only see this page if you are logged in.');
 });
 
 app.post('/signup', (req, res, next) => {
   userController.addUser(req, res);
 });
 
-app.post('/signin', verifyUser, (req, res) => {
+app.post('/signin', signUserIn, (req, res) => {
   res.redirect('/user-dashboard');
 });
 
-app.post('/signout', (req, res, next) => {
-  if (req.session) {
-    req.session.destroy(error => {
-      if (error) {
-        console.error('There was an error signing out:', error);
-        res.status(500).send('There was an error signing out.');
-      } else {
-        res.clearCookie('falcon.sid');
-        res.redirect('/');
-      }
-    });
-  } else {
-    // next(error);
-    res.status(400).send('No user is logged in.');
-  }
-});
+app.post('/signout', signUserOut, (req, res, next) => {});
 
 app.listen(port, () => {
   console.log(`Express server listening on port ${port}...`);
