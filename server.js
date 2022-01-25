@@ -70,7 +70,10 @@ app.post('/signup', (req, res, next) => {
 
 app.post('/signin', signUserIn, (req, res) => {
   if (req.session.userId) {
-    res.redirect('/user-dashboard');
+    // res.redirect('/user-dashboard');
+    res
+      .status(200)
+      .json({ userId: req.session.userId, sessionId: req.sessionID });
   } else {
     res.status(500).send('This error should never be reached');
   }
