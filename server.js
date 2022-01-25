@@ -3,7 +3,7 @@
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser'); // Superfluous?
 const { isLoggedIn, signUserIn, signUserOut } = require('./auth/auth');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
@@ -34,7 +34,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors(/*{ credentials: true }*/));
+app.use(cors());
 app.use(cookieParser());
 app.use(
   session({
@@ -52,11 +52,15 @@ app.use(
 
 app.use('/users', require('./routes/userRouter'));
 
-app.get('/', (req, res) => {
+// POST request is being redirected here and failing the GET expectation
+// app.get('/', (req, res) => {
+app.all('/', (req, res) => {
   res.status(200).send('Falcon Investments server is live.');
 });
 
-app.get('/user-dashboard', isLoggedIn, (req, res) => {
+// POST request is being redirected here and failing the GET expectation
+// app.get('/user-dashboard', isLoggedIn, (req, res) => {
+app.all('/user-dashboard', isLoggedIn, (req, res) => {
   res.status(200).send('You should only see this page if you are logged in.');
 });
 
@@ -65,10 +69,16 @@ app.post('/signup', (req, res, next) => {
 });
 
 app.post('/signin', signUserIn, (req, res) => {
-  res.redirect('/user-dashboard');
+  if (req.session.userId) {
+    res.redirect('/user-dashboard');
+  } else {
+    res.status(500).send('This error should never be reached');
+  }
 });
 
-app.post('/signout', signUserOut, (req, res, next) => {});
+app.post('/signout', signUserOut, (req, res, next) => {
+  res.redirect('/');
+});
 
 app.listen(port, () => {
   console.log(`Express server listening on port ${port}...`);

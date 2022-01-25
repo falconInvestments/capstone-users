@@ -15,8 +15,10 @@ const signUserIn = async (req, res, next) => {
   try {
     const user = await Users.findOne({ where: { email: req.body.email } });
     if (!user) {
+      req.session = false;
       res.status(404).send('The provided sign-in credentials are invalid.');
     } else if (!bcrypt.compareSync(req.body.password, user.password)) {
+      req.session = false;
       res.status(400).send('The provided sign-in credentials are invalid.');
     } else {
       req.session.loggedIn = true;
@@ -36,7 +38,7 @@ const signUserOut = (req, res, next) => {
         res.status(500).send('There was an error signing out.');
       } else {
         res.clearCookie('falcon.sid');
-        res.redirect('/');
+        next();
       }
     });
   } else {
