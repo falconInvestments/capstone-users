@@ -79,8 +79,8 @@ app.post('/signin', signUserIn, (req, res) => {
   }
 });
 
-app.post('/signout', signUserOut, (req, res, next) => {
-  res.redirect('/');
+app.get('/signout', signUserOut, (req, res, next) => {
+  res.status(200).send('The user has been signed out.');
 });
 
 app.listen(port, () => {
