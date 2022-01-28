@@ -1,7 +1,7 @@
 {
   "name": "capstone-main",
   "version": "0.0.1",
-  "description": "",
+  "description": "Main user/session server for the Falcon Investments app",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon",
