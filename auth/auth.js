@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const Users = require('../models/index').Users;
 
 const isLoggedIn = (req, res, next) => {
-  if (req.session.loggedIn && req.params.id === req.session.userId) {
+  if (req.session.loggedIn && req.params.id === req.session.userId.toString()) {
     next();
   } else {
     res.status(400).send('This request must come from the specified user.');
