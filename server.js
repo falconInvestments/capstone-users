@@ -80,7 +80,7 @@ app.post('/signin', signUserIn, (req, res) => {
 });
 
 app.get('/signout', signUserOut, (req, res, next) => {
-  res.status(200).send('The user has been signed out.');
+  res.status(200).json({ message: 'The user has been signed out.' });
 });
 
 app.listen(port, () => {
