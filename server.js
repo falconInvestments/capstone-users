@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 
 const express = require('express');
 const session = require('express-session');
@@ -86,3 +86,5 @@ app.get('/signout', signUserOut, (req, res, next) => {
 app.listen(port, () => {
   console.log(`Express server listening on port ${port}...`);
 });
+
+module.exports = app;

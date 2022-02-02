@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 
-const Users = require('../models/index').Users;
+// const Users = require('../models/index').Users;
+const Users = require('../models/index').UsersTest;
 
 const isLoggedIn = (req, res, next) => {
   if (req.session.loggedIn && req.params.id === req.session.userId.toString()) {

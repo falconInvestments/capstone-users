@@ -2,7 +2,8 @@
 
 const bcrypt = require('bcryptjs');
 
-const Users = require('../models/index').Users;
+// const Users = require('../models/index').Users;
+const Users = require('../models/index').UsersTest;
 
 // Create
 const addUser = async (req, res) => {

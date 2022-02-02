@@ -33,6 +33,7 @@ const db = {};
 db.sequelize = sequelize;
 
 db.Users = require('./userModel')(sequelize, DataTypes);
+db.UsersTest = require('./userTestModel')(sequelize, DataTypes);
 
 db.sequelize
   .sync()
